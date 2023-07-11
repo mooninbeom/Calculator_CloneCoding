@@ -79,6 +79,7 @@ class ViewController: UIViewController {
     }()
     
     // MARK: - View 3열 (숫자 7, 8, 9/ 곱하기 버튼)
+    // 숫자7 버튼
     lazy var num7Btn: UIButton = {
         let view = UIButton()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -90,6 +91,7 @@ class ViewController: UIViewController {
         return view
     }()
     
+    // 숫자8 버튼
     lazy var num8Btn: UIButton = {
         let view = UIButton()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -101,6 +103,7 @@ class ViewController: UIViewController {
         return view
     }()
     
+    // 숫자9 버튼
     lazy var num9Btn: UIButton = {
         let view = UIButton()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -112,6 +115,7 @@ class ViewController: UIViewController {
         return view
     }()
     
+    // 곱하기 버튼
     lazy var multiplyBtn: UIButton = {
         let view = UIButton()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -265,6 +269,8 @@ class ViewController: UIViewController {
 }
 
 extension ViewController {
+    
+    // UI 셋업
     func setUp() {
         let screenWidth = UIScreen.main.bounds.width
         let screenHeight = UIScreen.main.bounds.height
@@ -279,7 +285,6 @@ extension ViewController {
         resultView.topAnchor.constraint(equalTo: view.topAnchor, constant: screenHeight/5).isActive = true
         resultView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10).isActive = true
         resultView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -10).isActive = true
-//        resultView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -100).isActive = true
         
         view.addSubview(resetButton)
         resetButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: safeConstant).isActive = true
@@ -434,7 +439,58 @@ extension ViewController {
         equalBtn.clipsToBounds = true
     }
     
-    @objc
+    // 화면에 보여주는 String을 만들어주는 메소드
+    func calcMethod(_ num: String) -> Void {
+        
+        if result == nil {
+            result = ""
+            if num == "   0" {
+                result!.append("0")
+            } else {
+                result!.append(num)
+            }
+        } else {
+            if num == "   0" {
+                result!.append("0")
+            } else {
+                result!.append(num)
+            }
+        }
+        
+        if !isOperatorToggled() {
+            if num == "   0" {
+                firstView.append("0")
+            } else {
+                firstView.append(num)
+            }
+        } else {
+            if num == "   0" {
+                secondView.append("0")
+            } else {
+                secondView.append(num)
+            }
+        }
+        
+    }
+    
+    // 연산자 버튼이 눌러져 있는지 알려주는 메소드
+    func isOperatorToggled() -> Bool {
+        if (!plusBtn.isSelected && !minusBtn.isSelected && !multiplyBtn.isSelected && !devideBtn.isSelected) {
+            return false
+        }
+        return true
+    }
+    
+    // 어떤 연산자 버튼이 눌러져 있는지 알려주는 메소드
+    func whatOperatorToggled() -> Int {
+        if plusBtn.isSelected { return 1 }
+        if minusBtn.isSelected { return 2 }
+        if multiplyBtn.isSelected { return 3 }
+        if devideBtn.isSelected { return 4 }
+        return 0
+    }
+    
+    @objc // AC 버튼을 탭 할시 발생하는 이벤트
     func tapResetBtn() {
         if self.resetButton.isHighlighted {
             self.resetButton.backgroundColor = .white
@@ -463,7 +519,7 @@ extension ViewController {
     }
 
     
-    @objc
+    @objc // 숫자 버튼을 탭할시 발생하는 이벤트
     func tapNumBtn(_ sender: UIButton!) {
         guard let btnNum = sender.titleLabel?.text else {
             print("error")
@@ -520,69 +576,12 @@ extension ViewController {
         }
         
         self.calcMethod(btnNum)
-        
-        
-        /*
-        if (calcView.count > 3 && calcView.count % 3 == 1) {
-            let idx = calcView.index(calcView.endIndex, offsetBy: -3)
-            result!.insert(",", at: idx)
-        }
-         */
-        
         self.resultView.text = (isOperatorToggled()) ? secondView : firstView
         print(result!)
     }
     
-    func calcMethod(_ num: String) -> Void {
-        
-        if result == nil {
-            result = ""
-            if num == "   0" {
-                result!.append("0")
-            } else {
-                result!.append(num)
-            }
-        } else {
-            if num == "   0" {
-                result!.append("0")
-            } else {
-                result!.append(num)
-            }
-        }
-        
-        if !isOperatorToggled() {
-            if num == "   0" {
-                firstView.append("0")
-            } else {
-                firstView.append(num)
-            }
-        } else {
-            if num == "   0" {
-                secondView.append("0")
-            } else {
-                secondView.append(num)
-            }
-        }
-        
-    }
     
-    func isOperatorToggled() -> Bool {
-        if (!plusBtn.isSelected && !minusBtn.isSelected && !multiplyBtn.isSelected && !devideBtn.isSelected) {
-            return false
-        }
-        return true
-    }
-    
-    func whatOperatorToggled() -> Int {
-        if plusBtn.isSelected { return 1 }
-        if minusBtn.isSelected { return 2 }
-        if multiplyBtn.isSelected { return 3 }
-        if devideBtn.isSelected { return 4 }
-        return 0
-    }
-    
-    
-    @objc
+    @objc // = 버튼 탭시 발생하는 이벤트
     func tapEqualBtn(_ sender: UIButton!) {
         
         if (self.firstView.isEmpty || self.secondView.isEmpty) {
@@ -636,7 +635,7 @@ extension ViewController {
         UIView.animate(withDuration: 0.5, animations: {self.equalBtn.backgroundColor = .systemOrange})
     }
     
-    @objc
+    @objc // 연산자 버튼을 탭할시 발생하는 이벤트
     func tapOperatorBtn(_ sender: UIButton!) {
         guard let operatorName = sender.titleLabel?.text else { print("error!"); return}
         
